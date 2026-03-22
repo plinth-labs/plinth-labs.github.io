@@ -85,4 +85,4 @@ This is where we operate.
 
 ---
 
-<sub>Engineering field reports on AI infrastructure · Est. 2025</sub>
+<sub>Engineering field reports on AI infrastructure · Est. 2026</sub>
