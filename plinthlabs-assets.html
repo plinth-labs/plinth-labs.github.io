@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plinth Labs — Blog Asset Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Archivo:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #07090D; --bg2: #0C0F15; --bg3: #111520;
+  --border: #1A1F2E; --border2: #252B3B;
+  --accent: #00CFA8; --accent2: #FF5C35;
+  --text: #DDD9D0; --text2: #7A7870; --text3: #4A4845;
+  --mono: 'IBM Plex Mono', monospace;
+  --display: 'Syne', sans-serif;
+  --body: 'Archivo', sans-serif;
+}
+body { background: #0a0c12; color: var(--text); font-family: var(--body); font-size: 14px; line-height: 1.6; }
+
+/* ── SHELL ── */
+.shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar-logo {
+  font-family: var(--display); font-weight: 800; font-size: 14px;
+  letter-spacing: 0.1em; color: var(--text); padding: 0 20px 20px;
+  border-bottom: 1px solid var(--border); margin-bottom: 16px;
+}
+.sidebar-logo span { color: var(--accent); }
+.sidebar-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--text3); padding: 0 20px 8px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer;
+  font-family: var(--mono); font-size: 11px; color: var(--text2);
+  letter-spacing: 0.04em; transition: all 0.15s; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--text); background: rgba(0,207,168,0.04); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,207,168,0.06); }
+.nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
+.nav-item.active .nav-dot { background: var(--accent); }
+
+/* ── MAIN ── */
+.main { padding: 40px 48px; max-width: 1100px; }
+.page { display: none; }
+.page.active { display: block; }
+
+.page-header { margin-bottom: 36px; }
+.page-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.page-title { font-family: var(--display); font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; margin-bottom: 8px; }
+.page-desc { font-size: 13px; color: var(--text2); max-width: 560px; line-height: 1.7; }
+
+/* ── CONTROLS ── */
+.controls {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 20px 24px; margin-bottom: 28px;
+  display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;
+}
+.ctrl-group { display: flex; flex-direction: column; gap: 6px; }
+.ctrl-group label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+.ctrl-group input, .ctrl-group select {
+  background: var(--bg); border: 1px solid var(--border2); color: var(--text);
+  font-family: var(--mono); font-size: 12px; padding: 8px 12px;
+  outline: none; transition: border-color 0.2s; min-width: 200px;
+}
+.ctrl-group input:focus, .ctrl-group select:focus { border-color: var(--accent); }
+.ctrl-group select option { background: var(--bg3); }
+
+.btn {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 9px 20px; cursor: pointer;
+  border: none; transition: all 0.2s;
+}
+.btn-accent { background: var(--accent); color: var(--bg); }
+.btn-accent:hover { opacity: 0.85; }
+.btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
+.btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+
+/* ── PREVIEW FRAME ── */
+.preview-frame {
+  border: 1px solid var(--border2); background: var(--bg);
+  margin-bottom: 20px; overflow: hidden;
+}
+.preview-bar {
+  background: var(--bg3); border-bottom: 1px solid var(--border);
+  padding: 8px 16px; display: flex; align-items: center; justify-content: space-between;
+}
+.preview-bar-left { display: flex; align-items: center; gap: 8px; }
+.pdot { width: 9px; height: 9px; border-radius: 50%; }
+.pdot.r { background: #FF5F57; } .pdot.y { background: #FFBD2E; } .pdot.g { background: #28C840; }
+.preview-label { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-left: 6px; }
+.preview-size { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+.preview-body { padding: 24px; overflow-x: auto; }
+
+/* ── SPEC TABLE ── */
+.spec-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.spec-table th {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text3); text-align: left; padding: 8px 12px;
+  border-bottom: 1px solid var(--border); background: var(--bg2);
+}
+.spec-table td {
+  font-family: var(--mono); font-size: 11px; color: var(--text2);
+  padding: 8px 12px; border-bottom: 1px solid var(--border);
+}
+.spec-table td:first-child { color: var(--text); }
+
+/* ── SECTION DIVIDER ── */
+.asset-section { margin-bottom: 48px; }
+.asset-section-title {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text2); margin-bottom: 16px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.asset-section-title::before {
+  content: ''; display: block; width: 4px; height: 14px; background: var(--accent);
+}
+
+/* ── USAGE NOTES ── */
+.usage-note {
+  background: rgba(0,207,168,0.05); border: 1px solid rgba(0,207,168,0.15);
+  padding: 12px 16px; margin-top: 12px;
+  font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.7;
+}
+.usage-note strong { color: var(--accent); }
+
+/* ── COLOR SWATCHES ── */
+.swatch-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.swatch { width: 64px; text-align: center; }
+.swatch-color { width: 64px; height: 40px; border: 1px solid var(--border2); margin-bottom: 4px; }
+.swatch-name { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 0.06em; }
+.swatch-hex { font-family: var(--mono); font-size: 9px; color: var(--text2); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">PLINTH<span>.</span>LABS <br><span style="font-size:9px;font-weight:400;color:var(--text3);letter-spacing:0.08em">ASSET KIT v1.0</span></div>
+    <div class="sidebar-label">Assets</div>
+    <div class="nav-item active" onclick="show('banner')"><div class="nav-dot"></div>Banner Generator</div>
+    <div class="nav-item" onclick="show('diagram')"><div class="nav-dot"></div>Arch Diagram</div>
+    <div class="nav-item" onclick="show('table')"><div class="nav-dot"></div>Data Tables</div>
+    <div class="nav-item" onclick="show('callout')"><div class="nav-dot"></div>Callout Blocks</div>
+    <div class="nav-item" onclick="show('divider')"><div class="nav-dot"></div>Section Dividers</div>
+    <div class="nav-item" onclick="show('system')"><div class="nav-dot"></div>Design System</div>
+  </nav>
+
+  <div class="main">
+
+    <!-- ══════════════════════════════════════
+         BANNER GENERATOR
+    ══════════════════════════════════════ -->
+    <div id="page-banner" class="page active">
+      <div class="page-header">
+        <div class="page-label">Asset 01</div>
+        <div class="page-title">Banner Generator</div>
+        <div class="page-desc">1600×840px hero banner for Medium posts. Edit the fields below and download the SVG — paste into Figma or Canva to export as PNG.</div>
+      </div>
+
+      <div class="controls">
+        <div class="ctrl-group">
+          <label>Post Title</label>
+          <input id="b-title" type="text" value="Anatomy of a Production LLM Stack" oninput="renderBanner()">
+        </div>
+        <div class="ctrl-group">
+          <label>Series</label>
+          <select id="b-series" onchange="renderBanner()">
+            <option value="I — LLM System Architecture">I — LLM System Architecture</option>
+            <option value="II — RAG Architecture">II — RAG Architecture</option>
+            <option value="III — Vector Database Systems">III — Vector Database Systems</option>
+            <option value="IV — LLM Evaluation Frameworks">IV — LLM Evaluation Frameworks</option>
+            <option value="V — Prompt Systems Engineering">V — Prompt Systems Engineering</option>
+            <option value="VI — Context & Prompt Caching">VI — Context & Prompt Caching</option>
+            <option value="VII — Token Economics">VII — Token Economics</option>
+            <option value="VIII — Observability">VIII — Observability</option>
+            <option value="IX — Scaling LLM Infrastructure">IX — Scaling LLM Infrastructure</option>
+            <option value="X — Advanced GenAI Systems">X — Advanced GenAI Systems</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>Post Number</label>
+          <input id="b-num" type="text" value="01" style="min-width:80px" oninput="renderBanner()">
+        </div>
+        <div class="ctrl-group">
+          <label>Accent Tag</label>
+          <input id="b-tag" type="text" value="Field Report" style="min-width:120px" oninput="renderBanner()">
+        </div>
+        <button class="btn btn-accent" onclick="downloadBanner()">↓ Download SVG</button>
+      </div>
+
+      <div class="preview-frame">
+        <div class="preview-bar">
+          <div class="preview-bar-left">
+            <div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div>
+            <span class="preview-label">banner-preview.svg</span>
+          </div>
+          <span class="preview-size">1600 × 840px</span>
+        </div>
+        <div class="preview-body">
+          <div id="banner-preview"></div>
+        </div>
+      </div>
+
+      <div class="usage-note">
+        <strong>Usage:</strong> Download SVG → Open in Figma (File → Import) → Export as PNG 1600×840 → Upload as Medium header image.
+        Title wraps automatically at ~32 chars per line. Keep titles under 60 characters for best layout.
+      </div>
+
+      <table class="spec-table">
+        <tr><th>Property</th><th>Value</th></tr>
+        <tr><td>Dimensions</td><td>1600 × 840px</td></tr>
+        <tr><td>Format</td><td>SVG → export PNG</td></tr>
+        <tr><td>Background</td><td>#07090D with dot grid overlay</td></tr>
+        <tr><td>Primary font</td><td>Syne 800 (title), IBM Plex Mono 400 (meta)</td></tr>
+        <tr><td>Accent</td><td>#00CFA8 teal — series label, decorative line</td></tr>
+      </table>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ARCHITECTURE DIAGRAM
+    ══════════════════════════════════════ -->
+    <div id="page-diagram" class="page">
+      <div class="page-header">
+        <div class="page-label">Asset 02</div>
+        <div class="page-title">Architecture Diagram Template</div>
+        <div class="page-desc">Branded system architecture diagram. Dark background, teal accent nodes, Plinth Labs watermark. Edit SVG source directly in any editor.</div>
+      </div>
+
+      <div class="asset-section">
+        <div class="asset-section-title">Production LLM Stack — Reference Template</div>
+        <div class="preview-frame">
+          <div class="preview-bar">
+            <div class="preview-bar-left">
+              <div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div>
+              <span class="preview-label">arch-diagram-template.svg</span>
+            </div>
+            <span class="preview-size">1200 × 680px · right-click → Save image</span>
+          </div>
+          <div class="preview-body" style="background:#07090D">
+            <div id="arch-diagram"></div>
+          </div>
+        </div>
+        <div class="usage-note">
+          <strong>To customise:</strong> Open SVG in VS Code or Figma. Change node labels, add/remove layers, adjust arrows. Keep the color system consistent — teal (#00CFA8) for active paths, #252B3B for neutral nodes, #FF5C35 for failure/warning states.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         DATA TABLES
+    ══════════════════════════════════════ -->
+    <div id="page-table" class="page">
+      <div class="page-header">
+        <div class="page-label">Asset 03</div>
+        <div class="page-title">Data Tables</div>
+        <div class="page-desc">Branded comparison and benchmark tables. Three variants — comparison, benchmark, and tradeoff matrix.</div>
+      </div>
+
+      <div class="asset-section">
+        <div class="asset-section-title">Variant A — Comparison Table</div>
+        <div class="preview-frame">
+          <div class="preview-bar">
+            <div class="preview-bar-left"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div>
+              <span class="preview-label">table-comparison.html</span>
+            </div>
+          </div>
+          <div class="preview-body" id="table-comparison"></div>
+        </div>
+      </div>
+
+      <div class="asset-section">
+        <div class="asset-section-title">Variant B — Benchmark / Latency Table</div>
+        <div class="preview-frame">
+          <div class="preview-bar">
+            <div class="preview-bar-left"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div>
+              <span class="preview-label">table-benchmark.html</span>
+            </div>
+          </div>
+          <div class="preview-body" id="table-benchmark"></div>
+        </div>
+      </div>
+
+      <div class="asset-section">
+        <div class="asset-section-title">Variant C — Tradeoff Matrix</div>
+        <div class="preview-frame">
+          <div class="preview-bar">
+            <div class="preview-bar-left"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div>
+              <span class="preview-label">table-tradeoff.html</span>
+            </div>
+          </div>
+          <div class="preview-body" id="table-tradeoff"></div>
+        </div>
+      </div>
+
+      <div class="usage-note">
+        <strong>How to use in Medium:</strong> Medium doesn't support native HTML tables. Screenshot these at 2x (use browser zoom 200%), crop tightly, and insert as images. Alt: paste HTML into a custom embed or use Carbon.now.sh for code-style renders.
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         CALLOUT BLOCKS
+    ══════════════════════════════════════ -->
+    <div id="page-callout" class="page">
+      <div class="page-header">
+        <div class="page-label">Asset 04</div>
+        <div class="page-title">Callout Blocks</div>
+        <div class="page-desc">Branded inline callouts for key insights, warnings, MAANG-grade considerations, and code context. Screenshot and embed as images.</div>
+      </div>
+      <div class="preview-frame">
+        <div class="preview-bar">
+          <div class="preview-bar-left"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div>
+            <span class="preview-label">callout-blocks.html</span>
+          </div>
+        </div>
+        <div class="preview-body" id="callout-blocks"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SECTION DIVIDERS
+    ══════════════════════════════════════ -->
+    <div id="page-divider" class="page">
+      <div class="page-header">
+        <div class="page-label">Asset 05</div>
+        <div class="page-title">Section Dividers</div>
+        <div class="page-desc">Branded horizontal dividers and section headers to separate major sections in posts. Drop in as images between paragraphs.</div>
+      </div>
+      <div class="preview-frame">
+        <div class="preview-bar">
+          <div class="preview-bar-left"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div>
+            <span class="preview-label">section-dividers.svg</span>
+          </div>
+        </div>
+        <div class="preview-body" style="background:#07090D" id="dividers-preview"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         DESIGN SYSTEM
+    ══════════════════════════════════════ -->
+    <div id="page-system" class="page">
+      <div class="page-header">
+        <div class="page-label">Reference</div>
+        <div class="page-title">Design System</div>
+        <div class="page-desc">The canonical color, typography, and spacing tokens for all Plinth Labs assets. Apply consistently across every post.</div>
+      </div>
+
+      <div class="asset-section">
+        <div class="asset-section-title">Color Palette</div>
+        <div class="swatch-row">
+          <div class="swatch"><div class="swatch-color" style="background:#07090D"></div><div class="swatch-name">BG Primary</div><div class="swatch-hex">#07090D</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#0C0F15"></div><div class="swatch-name">BG Surface</div><div class="swatch-hex">#0C0F15</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#111520"></div><div class="swatch-name">BG Layer</div><div class="swatch-hex">#111520</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#1A1F2E"></div><div class="swatch-name">Border</div><div class="swatch-hex">#1A1F2E</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#252B3B"></div><div class="swatch-name">Border 2</div><div class="swatch-hex">#252B3B</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#00CFA8"></div><div class="swatch-name">Accent</div><div class="swatch-hex">#00CFA8</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#FF5C35"></div><div class="swatch-name">Accent 2</div><div class="swatch-hex">#FF5C35</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#DDD9D0"></div><div class="swatch-name">Text</div><div class="swatch-hex">#DDD9D0</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#7A7870"></div><div class="swatch-name">Text Muted</div><div class="swatch-hex">#7A7870</div></div>
+        </div>
+      </div>
+
+      <div class="asset-section">
+        <div class="asset-section-title">Typography Scale</div>
+        <table class="spec-table">
+          <tr><th>Role</th><th>Font</th><th>Weight</th><th>Size</th><th>Use</th></tr>
+          <tr><td>Display / Hero</td><td>Syne</td><td>800</td><td>64–120px</td><td>Banner title, post headline</td></tr>
+          <tr><td>Section Header</td><td>Syne</td><td>700</td><td>24–32px</td><td>Diagram section labels</td></tr>
+          <tr><td>Body</td><td>Archivo</td><td>300–400</td><td>16–18px</td><td>Post body text</td></tr>
+          <tr><td>Mono / Code</td><td>IBM Plex Mono</td><td>400</td><td>12–14px</td><td>Tags, labels, code, metadata</td></tr>
+          <tr><td>Diagram Node</td><td>IBM Plex Mono</td><td>500</td><td>11–13px</td><td>Node labels in arch diagrams</td></tr>
+        </table>
+      </div>
+
+      <div class="asset-section">
+        <div class="asset-section-title">Semantic Color Usage</div>
+        <table class="spec-table">
+          <tr><th>Color</th><th>Use in diagrams</th><th>Use in callouts</th></tr>
+          <tr><td style="color:#00CFA8">#00CFA8 Teal</td><td>Active path, happy path, primary flow</td><td>Key insight, MAANG section</td></tr>
+          <tr><td style="color:#FF5C35">#FF5C35 Coral</td><td>Failure path, error state, fallback</td><td>Warning, gotcha, anti-pattern</td></tr>
+          <tr><td style="color:#7A7870">#7A7870 Gray</td><td>Neutral nodes, infrastructure layer</td><td>Note, context, aside</td></tr>
+          <tr><td style="color:#DDD9D0">#DDD9D0 Warm white</td><td>Active/highlighted node label</td><td>Primary callout text</td></tr>
+        </table>
+      </div>
+
+      <div class="asset-section">
+        <div class="asset-section-title">Asset Checklist — Per Post</div>
+        <table class="spec-table">
+          <tr><th>#</th><th>Asset</th><th>Required</th><th>Notes</th></tr>
+          <tr><td>1</td><td>Banner image</td><td style="color:#00CFA8">Always</td><td>1600×840, series + title + post number</td></tr>
+          <tr><td>2</td><td>Architecture diagram</td><td style="color:#00CFA8">Always</td><td>Min 1 per post, dark bg, labeled nodes</td></tr>
+          <tr><td>3</td><td>Comparison table</td><td style="color:#7A7870">When applicable</td><td>Any post comparing 2+ options</td></tr>
+          <tr><td>4</td><td>MAANG callout block</td><td style="color:#00CFA8">Always</td><td>End-of-post hyperscale considerations</td></tr>
+          <tr><td>5</td><td>Code snippet</td><td style="color:#7A7870">When applicable</td><td>GitHub gist or Carbon.now.sh</td></tr>
+          <tr><td>6</td><td>Section divider</td><td style="color:#7A7870">Optional</td><td>Use between H2 sections for visual rhythm</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+// ── NAV ──
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── BANNER RENDERER ──
+function wrapText(text, maxLen) {
+  const words = text.split(' ');
+  const lines = [];
+  let current = '';
+  for (const w of words) {
+    if ((current + ' ' + w).trim().length <= maxLen) {
+      current = (current + ' ' + w).trim();
+    } else {
+      if (current) lines.push(current);
+      current = w;
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+function renderBanner() {
+  const title   = document.getElementById('b-title').value || 'Post Title';
+  const series  = document.getElementById('b-series').value;
+  const num     = document.getElementById('b-num').value || '01';
+  const tag     = document.getElementById('b-tag').value || 'Field Report';
+  const lines   = wrapText(title, 28);
+  const lineH   = 88;
+  const startY  = lines.length === 1 ? 400 : lines.length === 2 ? 360 : 330;
+
+  const titleSvg = lines.map((l, i) =>
+    `<text x="80" y="${startY + i * lineH}" font-family="'Syne',sans-serif" font-weight="800" font-size="80" fill="#DDD9D0" letter-spacing="-2">${l}</text>`
+  ).join('');
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 840" width="100%" style="display:block;max-width:100%">
+  <defs>
+    <pattern id="dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="rgba(0,207,168,0.10)"/>
+    </pattern>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#07090D"/>
+      <stop offset="60%" stop-color="#07090D" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="rgba(0,207,168,0.07)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+
+  <!-- BG -->
+  <rect width="1600" height="840" fill="#07090D"/>
+  <rect width="1600" height="840" fill="url(#dots)"/>
+  <rect width="1600" height="840" fill="url(#glow)"/>
+
+  <!-- Left fade -->
+  <rect width="900" height="840" fill="url(#fade)"/>
+
+  <!-- Accent line -->
+  <rect x="0" y="0" width="4" height="840" fill="#00CFA8"/>
+
+  <!-- Top meta row -->
+  <text x="80" y="80" font-family="'IBM Plex Mono',monospace" font-size="13" fill="#00CFA8" letter-spacing="3" text-transform="uppercase">PLINTH.LABS</text>
+  <text x="80" y="108" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#4A4845" letter-spacing="2">// engineering field report</text>
+
+  <!-- Series badge -->
+  <rect x="80" y="130" width="${series.length * 8 + 32}" height="28" fill="rgba(0,207,168,0.08)" stroke="#00CFA8" stroke-width="0.5"/>
+  <text x="96" y="149" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#00CFA8" letter-spacing="1.5">SERIES ${series}</text>
+
+  <!-- Title -->
+  ${titleSvg}
+
+  <!-- Bottom bar -->
+  <rect x="0" y="780" width="1600" height="1" fill="#1A1F2E"/>
+  <rect x="80" y="800" width="40" height="2" fill="#00CFA8"/>
+  <text x="132" y="815" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#4A4845" letter-spacing="2">POST ${num}</text>
+  <text x="260" y="815" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#252B3B" letter-spacing="1">·</text>
+  <text x="280" y="815" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#4A4845" letter-spacing="2">${tag.toUpperCase()}</text>
+
+  <!-- Post num watermark -->
+  <text x="1480" y="760" font-family="'Syne',sans-serif" font-weight="800" font-size="200" fill="rgba(255,255,255,0.02)" text-anchor="end">${num}</text>
+</svg>`;
+
+  document.getElementById('banner-preview').innerHTML = svg;
+  window._currentBannerSvg = svg;
+}
+
+function downloadBanner() {
+  if (!window._currentBannerSvg) return;
+  const title = document.getElementById('b-title').value.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+  const blob = new Blob([window._currentBannerSvg], { type: 'image/svg+xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `plinthlabs-banner-${title}.svg`;
+  a.click();
+}
+
+// ── ARCH DIAGRAM ──
+function renderArchDiagram() {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="100%" style="display:block">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#00CFA8" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+    <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#252B3B" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+    <marker id="arr-err" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#FF5C35" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+    <pattern id="bg-dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="0.5" cy="0.5" r="0.5" fill="rgba(0,207,168,0.08)"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="640" fill="#07090D"/>
+  <rect width="1200" height="640" fill="url(#bg-dots)"/>
+  <rect width="3" height="640" fill="#00CFA8"/>
+
+  <!-- LAYER LABELS -->
+  <text x="24" y="84" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" letter-spacing="2" transform="rotate(-90,24,84)" text-anchor="end">INGRESS</text>
+  <text x="24" y="234" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" letter-spacing="2" transform="rotate(-90,24,234)" text-anchor="end">ORCHESTRATION</text>
+  <text x="24" y="394" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" letter-spacing="2" transform="rotate(-90,24,394)" text-anchor="end">RETRIEVAL</text>
+  <text x="24" y="544" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" letter-spacing="2" transform="rotate(-90,24,544)" text-anchor="end">INFERENCE</text>
+
+  <!-- ROW GUIDES -->
+  <line x1="50" y1="50" x2="1170" y2="50" stroke="#1A1F2E" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="50" y1="170" x2="1170" y2="170" stroke="#1A1F2E" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="50" y1="290" x2="1170" y2="290" stroke="#1A1F2E" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="50" y1="410" x2="1170" y2="410" stroke="#1A1F2E" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="50" y1="530" x2="1170" y2="530" stroke="#1A1F2E" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+  <!-- ── ROW 1: INGRESS ── -->
+  <!-- Client -->
+  <rect x="60" y="72" width="120" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="120" y="96" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#DDD9D0" text-anchor="middle" font-weight="500">Client</text>
+  <text x="120" y="114" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">HTTP / WS</text>
+
+  <!-- Arrow -->
+  <line x1="180" y1="100" x2="240" y2="100" stroke="#00CFA8" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- API Gateway -->
+  <rect x="240" y="72" width="160" height="56" rx="4" fill="#0C0F15" stroke="#00CFA8" stroke-width="1"/>
+  <text x="320" y="96" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#00CFA8" text-anchor="middle" font-weight="500">API Gateway</text>
+  <text x="320" y="114" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">auth · rate limit · routing</text>
+
+  <!-- Arrow -->
+  <line x1="400" y1="100" x2="460" y2="100" stroke="#00CFA8" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Auth Service -->
+  <rect x="460" y="72" width="140" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="530" y="96" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#DDD9D0" text-anchor="middle" font-weight="500">Auth Service</text>
+  <text x="530" y="114" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">JWT · API keys</text>
+
+  <!-- Arrow -->
+  <line x1="600" y1="100" x2="660" y2="100" stroke="#00CFA8" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Request Queue -->
+  <rect x="660" y="72" width="150" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="735" y="96" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#DDD9D0" text-anchor="middle" font-weight="500">Request Queue</text>
+  <text x="735" y="114" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">Redis · SQS</text>
+
+  <!-- ── ROW 2: ORCHESTRATION ── -->
+  <!-- Down arrow from queue -->
+  <line x1="735" y1="128" x2="735" y2="192" stroke="#00CFA8" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Orchestrator -->
+  <rect x="620" y="192" width="230" height="56" rx="4" fill="#111520" stroke="#00CFA8" stroke-width="1.5"/>
+  <text x="735" y="216" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#00CFA8" text-anchor="middle" font-weight="500">Orchestration Layer</text>
+  <text x="735" y="234" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#7A7870" text-anchor="middle">LangChain · LlamaIndex · custom</text>
+
+  <!-- Arrows from orchestrator -->
+  <line x1="620" y1="220" x2="480" y2="220" stroke="#252B3B" stroke-width="1" marker-end="url(#arr2)"/>
+  <line x1="850" y1="220" x2="960" y2="220" stroke="#252B3B" stroke-width="1" marker-end="url(#arr2)"/>
+
+  <!-- Prompt Assembly -->
+  <rect x="340" y="192" width="140" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="410" y="216" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#DDD9D0" text-anchor="middle" font-weight="500">Prompt Assembly</text>
+  <text x="410" y="234" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">template · injection</text>
+
+  <!-- Model Router -->
+  <rect x="960" y="192" width="140" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="1030" y="216" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#DDD9D0" text-anchor="middle" font-weight="500">Model Router</text>
+  <text x="1030" y="234" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">confidence · cost</text>
+
+  <!-- ── ROW 3: RETRIEVAL ── -->
+  <!-- Down arrow from prompt assembly -->
+  <line x1="410" y1="248" x2="410" y2="312" stroke="#252B3B" stroke-width="1" marker-end="url(#arr2)"/>
+
+  <!-- Vector DB -->
+  <rect x="310" y="312" width="130" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="375" y="336" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#DDD9D0" text-anchor="middle" font-weight="500">Vector DB</text>
+  <text x="375" y="354" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">Pinecone · Qdrant</text>
+
+  <!-- Reranker -->
+  <rect x="460" y="312" width="130" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="525" y="336" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#DDD9D0" text-anchor="middle" font-weight="500">Re-ranker</text>
+  <text x="525" y="354" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">Cohere · custom</text>
+
+  <!-- BM25 -->
+  <rect x="160" y="312" width="130" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="225" y="336" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#DDD9D0" text-anchor="middle" font-weight="500">BM25 Index</text>
+  <text x="225" y="354" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">keyword search</text>
+
+  <line x1="290" y1="340" x2="310" y2="340" stroke="#252B3B" stroke-width="0.8" marker-end="url(#arr2)"/>
+  <line x1="440" y1="340" x2="460" y2="340" stroke="#252B3B" stroke-width="0.8" marker-end="url(#arr2)"/>
+
+  <!-- ── ROW 4: INFERENCE ── -->
+  <!-- Down from model router -->
+  <line x1="1030" y1="248" x2="1030" y2="432" stroke="#252B3B" stroke-width="1" marker-end="url(#arr2)"/>
+
+  <!-- Small model -->
+  <rect x="830" y="432" width="110" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="885" y="456" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#7A7870" text-anchor="middle" font-weight="500">Small Model</text>
+  <text x="885" y="474" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">Haiku · Mistral</text>
+
+  <!-- Mid model -->
+  <rect x="970" y="432" width="120" height="56" rx="4" fill="#0C0F15" stroke="#00CFA8" stroke-width="0.8"/>
+  <text x="1030" y="456" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#00CFA8" text-anchor="middle" font-weight="500">Mid Model</text>
+  <text x="1030" y="474" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">Sonnet · GPT-4o</text>
+
+  <!-- Frontier model -->
+  <rect x="1110" y="432" width="60" height="56" rx="4" fill="#0C0F15" stroke="#252B3B" stroke-width="0.5"/>
+  <text x="1140" y="456" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#7A7870" text-anchor="middle" font-weight="500">Opus</text>
+  <text x="1140" y="474" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">frontier</text>
+
+  <!-- Confidence arrows to models -->
+  <line x1="1030" y1="432" x2="955" y2="432" stroke="#252B3B" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <line x1="1090" y1="460" x2="1110" y2="460" stroke="#252B3B" stroke-width="0.8" stroke-dasharray="3 3"/>
+
+  <!-- Eval pipeline (side) -->
+  <rect x="60" y="432" width="140" height="56" rx="4" fill="#111520" stroke="#FF5C35" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text x="130" y="455" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#FF5C35" text-anchor="middle" font-weight="500">Eval Pipeline</text>
+  <text x="130" y="473" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">hallucination · grounding</text>
+
+  <!-- Observability (side) -->
+  <rect x="60" y="312" width="80" height="56" rx="4" fill="#111520" stroke="#FF5C35" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text x="100" y="336" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#FF5C35" text-anchor="middle" font-weight="500">Langfuse</text>
+  <text x="100" y="354" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" text-anchor="middle">tracing</text>
+
+  <!-- Watermark -->
+  <text x="1170" y="625" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#1A1F2E" text-anchor="end" letter-spacing="2">PLINTH.LABS — plinthlabs.io</text>
+</svg>`;
+
+  document.getElementById('arch-diagram').innerHTML = svg;
+}
+
+// ── COMPARISON TABLE ──
+function renderTables() {
+  // Variant A - Comparison
+  document.getElementById('table-comparison').innerHTML = `
+  <style>
+    .pl-table { width:100%; border-collapse:collapse; font-family:'IBM Plex Mono',monospace; background:#07090D; }
+    .pl-table thead tr { border-bottom:1px solid #00CFA8; }
+    .pl-table th { font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#00CFA8; padding:12px 16px; text-align:left; font-weight:500; background:#0C0F15; }
+    .pl-table td { font-size:12px; color:#7A7870; padding:10px 16px; border-bottom:1px solid #1A1F2E; }
+    .pl-table td:first-child { color:#DDD9D0; }
+    .pl-table tr:hover td { background:#0C0F15; }
+    .pl-table .check { color:#00CFA8; } .pl-table .cross { color:#FF5C35; }
+    .pl-tname { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:#4A4845; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px; padding-left:4px; }
+    .pl-table-wrap { border:1px solid #1A1F2E; overflow:hidden; }
+  </style>
+  <div class="pl-tname">Vector Database Comparison</div>
+  <div class="pl-table-wrap">
+  <table class="pl-table">
+    <thead><tr>
+      <th>Database</th><th>Index Type</th><th>Managed</th><th>Filtering</th><th>Multi-tenant</th><th>Best For</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Pinecone</td><td>HNSW (proprietary)</td><td><span class="check">✓ Fully</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td>Production SaaS</td></tr>
+      <tr><td>Qdrant</td><td>HNSW</td><td><span class="check">✓ Optional</span></td><td><span class="check">✓ Rich</span></td><td><span class="check">✓</span></td><td>Self-hosted, cost-sensitive</td></tr>
+      <tr><td>Weaviate</td><td>HNSW + BM25</td><td><span class="check">✓ Optional</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td>Hybrid search</td></tr>
+      <tr><td>Milvus</td><td>IVF / HNSW / DiskANN</td><td><span class="cross">✗ Self-hosted</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td>Billion-scale</td></tr>
+      <tr><td>pgvector</td><td>IVFFlat / HNSW</td><td><span class="cross">✗ Self-hosted</span></td><td><span class="check">✓ SQL</span></td><td><span class="cross">✗</span></td><td>Existing Postgres infra</td></tr>
+    </tbody>
+  </table>
+  </div>`;
+
+  // Variant B - Benchmark
+  document.getElementById('table-benchmark').innerHTML = `
+  <style>
+    .pl-bm { width:100%; border-collapse:collapse; font-family:'IBM Plex Mono',monospace; background:#07090D; }
+    .pl-bm thead tr { border-bottom:1px solid #00CFA8; }
+    .pl-bm th { font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#00CFA8; padding:12px 16px; text-align:right; font-weight:500; background:#0C0F15; }
+    .pl-bm th:first-child { text-align:left; }
+    .pl-bm td { font-size:12px; color:#7A7870; padding:10px 16px; border-bottom:1px solid #1A1F2E; text-align:right; }
+    .pl-bm td:first-child { color:#DDD9D0; text-align:left; }
+    .pl-bm tr:hover td { background:#0C0F15; }
+    .good { color:#00CFA8 !important; } .ok { color:#DDD9D0 !important; } .bad { color:#FF5C35 !important; }
+    .pl-bm-wrap { border:1px solid #1A1F2E; overflow:hidden; }
+  </style>
+  <div class="pl-tname">RAG Latency Benchmark (p50 / p99 ms, 10K vectors, single region)</div>
+  <div class="pl-bm-wrap">
+  <table class="pl-bm">
+    <thead><tr>
+      <th>Engine</th><th>Embed (ms)</th><th>Query p50</th><th>Query p99</th><th>Recall@10</th><th>$/1M queries</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Pinecone (s1)</td><td class="ok">42</td><td class="good">8</td><td class="good">24</td><td class="good">0.97</td><td class="bad">$0.96</td></tr>
+      <tr><td>Qdrant (cloud)</td><td class="ok">42</td><td class="good">6</td><td class="ok">31</td><td class="good">0.96</td><td class="good">$0.32</td></tr>
+      <tr><td>Weaviate (cloud)</td><td class="ok">42</td><td class="ok">14</td><td class="bad">58</td><td class="ok">0.94</td><td class="ok">$0.48</td></tr>
+      <tr><td>Milvus (self)</td><td class="ok">42</td><td class="good">5</td><td class="good">18</td><td class="good">0.98</td><td class="good">~$0.10</td></tr>
+    </tbody>
+  </table>
+  </div>`;
+
+  // Variant C - Tradeoff Matrix
+  document.getElementById('table-tradeoff').innerHTML = `
+  <style>
+    .pl-tm { width:100%; border-collapse:collapse; font-family:'IBM Plex Mono',monospace; background:#07090D; }
+    .pl-tm th { font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#00CFA8; padding:12px 16px; text-align:center; font-weight:500; background:#0C0F15; border-bottom:1px solid #00CFA8; }
+    .pl-tm th:first-child { text-align:left; }
+    .pl-tm td { font-size:11px; color:#7A7870; padding:10px 16px; border-bottom:1px solid #1A1F2E; text-align:center; }
+    .pl-tm td:first-child { color:#DDD9D0; text-align:left; }
+    .pl-tm tr:hover td { background:#0C0F15; }
+    .pl-tm-wrap { border:1px solid #1A1F2E; overflow:hidden; }
+    .hi { color:#00CFA8 !important; } .mid { color:#7A7870 !important; } .lo { color:#FF5C35 !important; }
+    .bar { display:inline-block; height:6px; background:#00CFA8; border-radius:2px; vertical-align:middle; margin-left:6px; }
+    .bar.lo { background:#FF5C35; } .bar.mid { background:#4A4845; }
+  </style>
+  <div class="pl-tname">Chunking Strategy Tradeoff Matrix</div>
+  <div class="pl-tm-wrap">
+  <table class="pl-tm">
+    <thead><tr>
+      <th>Strategy</th><th>Retrieval Accuracy</th><th>Implementation</th><th>Latency Impact</th><th>Context Coherence</th><th>MAANG Use</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>Fixed-size</td>
+        <td class="mid">Medium<span class="bar mid" style="width:32px"></span></td>
+        <td class="hi">Simple</td>
+        <td class="hi">Low</td>
+        <td class="lo">Poor</td>
+        <td class="lo">Prototypes only</td>
+      </tr>
+      <tr>
+        <td>Semantic</td>
+        <td class="hi">High<span class="bar" style="width:52px"></span></td>
+        <td class="mid">Medium</td>
+        <td class="mid">Medium</td>
+        <td class="hi">Good</td>
+        <td class="hi">Standard</td>
+      </tr>
+      <tr>
+        <td>Sliding window</td>
+        <td class="hi">High<span class="bar" style="width:44px"></span></td>
+        <td class="mid">Medium</td>
+        <td class="lo">High (+index cost)</td>
+        <td class="hi">Excellent</td>
+        <td class="mid">Common</td>
+      </tr>
+      <tr>
+        <td>Hierarchical</td>
+        <td class="hi">Highest<span class="bar" style="width:60px"></span></td>
+        <td class="lo">Complex</td>
+        <td class="mid">Medium</td>
+        <td class="hi">Excellent</td>
+        <td class="hi">Preferred</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>`;
+}
+
+// ── CALLOUT BLOCKS ──
+function renderCallouts() {
+  document.getElementById('callout-blocks').innerHTML = `
+  <style>
+    .pl-callouts { display:flex; flex-direction:column; gap:16px; font-family:'IBM Plex Mono',monospace; }
+    .pl-callout { padding:16px 20px; border-left:3px solid; position:relative; }
+    .pl-callout.insight { border-color:#00CFA8; background:rgba(0,207,168,0.05); }
+    .pl-callout.warning { border-color:#FF5C35; background:rgba(255,92,53,0.05); }
+    .pl-callout.maang   { border-color:#00CFA8; background:#0C0F15; border-left-width:2px; }
+    .pl-callout.note    { border-color:#252B3B; background:#0C0F15; }
+    .callout-label { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; font-weight:500; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+    .callout-label::before { content:''; display:block; width:16px; height:1px; }
+    .pl-callout.insight .callout-label { color:#00CFA8; }
+    .pl-callout.insight .callout-label::before { background:#00CFA8; }
+    .pl-callout.warning .callout-label { color:#FF5C35; }
+    .pl-callout.warning .callout-label::before { background:#FF5C35; }
+    .pl-callout.maang .callout-label { color:#00CFA8; }
+    .pl-callout.maang .callout-label::before { background:#00CFA8; }
+    .pl-callout.note .callout-label { color:#4A4845; }
+    .pl-callout.note .callout-label::before { background:#4A4845; }
+    .callout-body { font-size:12px; line-height:1.7; }
+    .pl-callout.insight .callout-body { color:#DDD9D0; }
+    .pl-callout.warning .callout-body { color:#DDD9D0; }
+    .pl-callout.maang   .callout-body { color:#7A7870; }
+    .pl-callout.note    .callout-body { color:#7A7870; }
+    .callout-body strong { font-weight:500; }
+    .pl-callout.insight .callout-body strong { color:#00CFA8; }
+    .pl-callout.warning .callout-body strong { color:#FF5C35; }
+    .pl-callout.maang   .callout-body strong { color:#DDD9D0; }
+  </style>
+  <div class="pl-callouts">
+
+    <div class="pl-callout insight">
+      <div class="callout-label">Key Insight</div>
+      <div class="callout-body">
+        <strong>Semantic chunking beats fixed-size by ~18% recall@10</strong> in practice — but only when your embedding model was trained on similar document types. Domain shift kills the advantage entirely.
+      </div>
+    </div>
+
+    <div class="pl-callout warning">
+      <div class="callout-label">⚠ Production Gotcha</div>
+      <div class="callout-body">
+        <strong>Never share a vector index across tenants without namespace isolation.</strong> A multi-tenant index without filtering leaks context between users at retrieval time — and it's invisible in unit tests.
+      </div>
+    </div>
+
+    <div class="pl-callout maang">
+      <div class="callout-label">MAANG-Grade Consideration</div>
+      <div class="callout-body">
+        At Google-scale, the retrieval layer runs <strong>async prefetch pipelines</strong> that pre-warm the top-k candidates before the user finishes typing. At 10K RPS, synchronous vector search adds 40–120ms per request — teams instead shift to pre-computed candidate sets refreshed on a sliding window.
+      </div>
+    </div>
+
+    <div class="pl-callout note">
+      <div class="callout-label">Context Note</div>
+      <div class="callout-body">
+        Benchmarks above were run against a 500K-document corpus using <strong>text-embedding-3-small (1536d)</strong> with HNSW ef=128. Numbers will vary significantly with larger corpora, different embedding dimensions, or disk-based indexes.
+      </div>
+    </div>
+
+  </div>`;
+}
+
+// ── SECTION DIVIDERS ──
+function renderDividers() {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" width="100%" style="display:block">
+  <rect width="1200" height="480" fill="#07090D"/>
+
+  <!-- Divider 1: Section header -->
+  <text x="60" y="60" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" letter-spacing="3">VARIANT A — SECTION HEADER</text>
+  <rect x="60" y="80" width="4" height="36" fill="#00CFA8"/>
+  <text x="76" y="95" font-family="'Syne',sans-serif" font-weight="700" font-size="22" fill="#DDD9D0" letter-spacing="-0.5">02 — Retrieval Architecture</text>
+  <text x="76" y="114" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#4A4845" letter-spacing="1">How the retrieval layer actually works under load</text>
+  <line x1="60" y1="130" x2="1140" y2="130" stroke="#1A1F2E" stroke-width="0.5"/>
+
+  <!-- Divider 2: Thin rule with label -->
+  <text x="60" y="170" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" letter-spacing="3">VARIANT B — RULE + LABEL</text>
+  <line x1="60" y1="200" x2="400" y2="200" stroke="#1A1F2E" stroke-width="0.5"/>
+  <rect x="406" y="192" width="160" height="16" fill="#0C0F15" stroke="#1A1F2E" stroke-width="0.5"/>
+  <text x="486" y="203" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#4A4845" text-anchor="middle" letter-spacing="2">// NEXT SECTION</text>
+  <line x1="572" y1="200" x2="1140" y2="200" stroke="#1A1F2E" stroke-width="0.5"/>
+
+  <!-- Divider 3: Accent gradient rule -->
+  <text x="60" y="240" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" letter-spacing="3">VARIANT C — ACCENT RULE</text>
+  <rect x="60" y="268" width="300" height="1" fill="#00CFA8"/>
+  <rect x="360" y="268" width="780" height="1" fill="#1A1F2E"/>
+  <text x="60" y="290" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#00CFA8" letter-spacing="2">MAANG-GRADE CONSIDERATIONS</text>
+
+  <!-- Divider 4: Post end signature -->
+  <text x="60" y="330" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#4A4845" letter-spacing="3">VARIANT D — POST FOOTER / SIGNATURE</text>
+  <line x1="60" y1="360" x2="1140" y2="360" stroke="#1A1F2E" stroke-width="0.5"/>
+  <rect x="60" y="375" width="28" height="28" fill="rgba(0,207,168,0.08)" stroke="#00CFA8" stroke-width="0.5"/>
+  <text x="74" y="394" font-family="'Syne',sans-serif" font-weight="800" font-size="12" fill="#00CFA8" text-anchor="middle">P</text>
+  <text x="100" y="384" font-family="'Syne',sans-serif" font-weight="700" font-size="13" fill="#DDD9D0" letter-spacing="0.5">Plinth Labs</text>
+  <text x="100" y="400" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#4A4845" letter-spacing="1">plinthlabs.io · github.com/plinth-labs</text>
+  <text x="1140" y="392" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#4A4845" text-anchor="end" letter-spacing="1">Engineering field reports on AI infrastructure</text>
+
+  <!-- Bottom label -->
+  <text x="1140" y="465" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#1A1F2E" text-anchor="end" letter-spacing="2">PLINTH.LABS ASSET KIT v1.0</text>
+</svg>`;
+
+  document.getElementById('dividers-preview').innerHTML = svg;
+}
+
+// ── INIT ──
+renderBanner();
+renderArchDiagram();
+renderTables();
+renderCallouts();
+renderDividers();
+</script>
+</body>
+</html>
